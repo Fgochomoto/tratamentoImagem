@@ -1,22 +1,19 @@
 package br.com.fiap;
 
-import static org.opencv.imgcodecs.Imgcodecs.imread;
-import static org.opencv.imgproc.Imgproc.ADAPTIVE_THRESH_MEAN_C;
-import static org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY;
-import static org.opencv.imgproc.Imgproc.THRESH_BINARY;
-
-import java.io.File;
-
+import org.bytedeco.opencv.global.opencv_imgcodecs;
+import org.bytedeco.opencv.global.opencv_imgproc;
+import org.bytedeco.opencv.opencv_core.*;
+import org.bytedeco.opencv.opencv_imgproc.*;
 import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
+import static org.bytedeco.opencv.global.opencv_core.*;
+import static org.bytedeco.opencv.global.opencv_imgcodecs.*;
+import static org.bytedeco.opencv.global.opencv_imgproc.*;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
+
+
+import java.io.File;
 
 public class TrataImagem {
     static String SRC_PATH = "C:/OCR/Imagens/";
@@ -32,19 +29,20 @@ public class TrataImagem {
         String result = "";
 
         Mat imgGray = new Mat();
-        Imgproc.cvtColor(inputMat, imgGray, COLOR_BGR2GRAY);
+        opencv_imgproc.cvtColor(inputMat, imgGray, COLOR_BGR2GRAY);
 
         Mat imgThreshold = new Mat();
-        Imgproc.adaptiveThreshold(imgGray, imgThreshold, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 51, 13);
+        opencv_imgproc.adaptiveThreshold(imgGray, imgThreshold, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 51, 13);
 
         Mat imgGaussianBlur = new Mat();
-        Imgproc.GaussianBlur(imgThreshold, imgGaussianBlur, new Size(1, 1), 0);
+        opencv_imgproc.GaussianBlur(imgThreshold, imgGaussianBlur, new Size(1, 1), 0);
 
-        Mat imgDilated = new Mat(imgGaussianBlur.size(), CvType.CV_8U);
+        Mat imgDilated = new Mat(imgGaussianBlur.size(), CV_8U);
         int dilation_size = 1;
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_CROSS, new Size(dilation_size, dilation_size));
-        Imgproc.dilate(imgGaussianBlur, imgDilated, kernel, new Point(-1,-1), 1);
-        Imgcodecs.imwrite(SRC_PATH + "imagem_tratada.png", imgDilated);
+        Mat kernel = opencv_imgproc.getStructuringElement(CV_SHAPE_CROSS, new Size(dilation_size, dilation_size));
+        opencv_imgproc.dilate(imgGaussianBlur, imgDilated, kernel, new Point(-1,-1), dilation_size, dilation_size, null);
+        //(imgGaussianBlur, imgDilated, kernel, new Point(-1,-1), 1);
+        opencv_imgcodecs.imwrite(SRC_PATH + "imagem_tratada.png", imgDilated);
 
         try {
             result = tesseract.doOCR(new File(SRC_PATH + "imagem_tratada.png"));
@@ -58,7 +56,7 @@ public class TrataImagem {
     }
 
     public static void trataImagem() {
-        Mat origin = imread("C:\\Users\\felip\\git\\tratamento-imagem\\output.png");
+    	Mat origin = imread("C:/Users/felip/git/tratamentoImagem/output.png");
         String result = new TrataImagem().extractString(origin);
         System.out.print(result);
     }
