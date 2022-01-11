@@ -10,13 +10,12 @@ import br.com.fiap.dto.TrataImagemRequest;
 
 public class ConverteImagem {
 	
-	public static byte[] decode(TrataImagemRequest base64String) throws FileNotFoundException, IOException {
+	public static String decode(TrataImagemRequest base64String) throws FileNotFoundException, IOException {
 		try(FileOutputStream stream = new FileOutputStream(new File("output.png")))
 		{
 			stream.write(Base64.getDecoder().decode(base64String.getImagemBase64()));
-			TrataImagem.trataImagem();
-		}
-		return null;		
+			return TrataImagem.trataImagem();
+		}		
 	}
 	
 }

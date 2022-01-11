@@ -55,9 +55,10 @@ public class TrataImagem {
 
     }
 
-    public static void trataImagem() {
+    public static String trataImagem() {
     	Mat origin = imread("C:/Users/felip/git/tratamentoImagem/output.png");
         String result = new TrataImagem().extractString(origin);
         System.out.print(result);
+        return result;
     }
 }

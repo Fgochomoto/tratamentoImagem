@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,13 +16,15 @@ import br.com.fiap.dto.TrataImagemRequest;
 import br.com.fiap.dto.TrataImagemResponse;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class TrataImagemController {
 	
 	@PostMapping("/ler-recibo")
 	  @ResponseBody
 	  public ResponseEntity<TrataImagemResponse> teste(@RequestBody TrataImagemRequest request) {
+		String imagemCodificada = "Não foi possível realizar a leitura.";
 		try {
-			ConverteImagem.decode(request);
+			imagemCodificada = ConverteImagem.decode(request);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -30,7 +33,7 @@ public class TrataImagemController {
 			e.printStackTrace();
 		}
 		  TrataImagemResponse response = new TrataImagemResponse();
-		  response.setTextoRecibo("foi");
+		  response.setTextoRecibo(imagemCodificada);
 		  return ResponseEntity.status(HttpStatus.OK).body(response);
 	  }
 
